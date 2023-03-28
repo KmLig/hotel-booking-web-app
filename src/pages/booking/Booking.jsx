@@ -91,20 +91,32 @@ const Booking = () => {
   }, []);
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
-    // try {
-    //   const response = await axios({
-    //     method: "PUT",
-    //     url: "http://localhost:5000/api/auth/signup",
-    //     data: user,
-    //   });
-    //   dispatch(signup(response.data));
-    //   navigate("/login");
-    // } catch (error) {
-    //   if (error) {
-    //     setErrorMessage(error.message);
-    //   }
-    // }
+    const data = {
+      user: userId,
+      hotel: hotel._id,
+      room: roomsBooked,
+      dateStart: date[0].startDate,
+      dateEnd: date[0].endDate,
+      price: totalBill,
+      payment: payment,
+      status: "Booked",
+    };
+    console.log(data);
+    e.preventDefault();
+    try {
+      const response = await axios({
+        method: "POST",
+        url: `http://localhost:5000/api/hotel/${hotel._id}/booking`,
+        data: data,
+      });
+      console.log(response.data);
+      //   dispatch(signup(response.data));
+      //   navigate("/login");
+    } catch (error) {
+      if (error) {
+        setErrorMessage(error.message);
+      }
+    }
   };
 
   //   console.log(hotel);
@@ -287,7 +299,10 @@ const Booking = () => {
                     </select>
                   </div>
                   <div className='col-4 d-flex justify-content-center align-items-end'>
-                    <button type='btn' className='btn btn-primary'>
+                    <button
+                      type='btn'
+                      onClick={handleSubmit}
+                      className='btn btn-primary'>
                       Reverse now
                     </button>
                   </div>
