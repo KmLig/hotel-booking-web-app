@@ -1,18 +1,17 @@
 const User = require('../models/user');
+const { validationResult } = require('express-validator');
 const bcryptjs = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 
 exports.singup = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const error = new Error('Validation failed.');
+        error.data = errors.array();
+        throw error;
+    }
     const { userName, password, fullName, phoneNumber, email } = req.body;
-
-    console.log(req.body.userName);
     try {
-        const existingUser = await User.findOne({ email: email });
-        if (existingUser) {
-            const error = new Error('User email exists, please choose another one');
-            error.code = 401;
-            throw error;
-        }
         const hashedPassword = await bcryptjs.hash(password, 12);
         const user = new User({
             userName: userName,
@@ -20,10 +19,10 @@ exports.singup = async (req, res, next) => {
             fullName: fullName,
             phoneNumber: phoneNumber,
             email: email,
-            isAdmin: false
+            isAdmin: req.body.isAdmin ? true : false
         });
         const result = await user.save();
-        res.status(201).json({ message: 'Created new user', userId: result._id.toString() });
+        res.status(201).json({ message: 'Created new user', userId: result._id.toString(), userName: userName });
     } catch (error) {
         if (!error.code) {
             error.code = 500;

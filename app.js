@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/auth');
 const hotelRoutes = require('./routes/hotel');
+const adminRoutes = require('./routes/admin');
 
 const MONGODB_URI = "mongodb+srv://khiem-nodejs-complete:fHxYl7XAEo9eVhnV@cluster0.gqkd11r.mongodb.net/hotel?retryWrites=true&w=majority";
 
@@ -16,16 +17,18 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-});
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     next();
+// });
 
 app.use('/api/auth', authRoutes);
 
 app.use('/api/hotel', hotelRoutes);
+
+app.use('/api/admin', adminRoutes);
 
 
 app.use((error, req, res, next) => {
